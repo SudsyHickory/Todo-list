@@ -1,6 +1,6 @@
 import { TaskDto } from './types';
 
-const API_URL = 'http://localhost:8080/tasks/';
+const API_URL = 'http://localhost:8080/tasks';
 
 export async function fetchTasks(): Promise<TaskDto[]> {
     const response = await fetch(API_URL);
@@ -9,7 +9,7 @@ export async function fetchTasks(): Promise<TaskDto[]> {
 }
 
 export async function fetchTask(id: number): Promise<TaskDto> {
-    const response = await fetch(`${API_URL}${id}`);
+    const response = await fetch(`${API_URL}/${id}`);
     if (!response.ok) throw new Error('Failed to fetch task');
     return response.json();
 }
@@ -25,7 +25,7 @@ export async function createTask(task: TaskDto): Promise<TaskDto> {
 }
 
 export async function updateTask(id: number, task: TaskDto): Promise<TaskDto> {
-    const response = await fetch(`${API_URL}${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(task),
@@ -35,7 +35,7 @@ export async function updateTask(id: number, task: TaskDto): Promise<TaskDto> {
 }
 
 export async function deleteTask(id: number): Promise<void> {
-    const response = await fetch(`${API_URL}${id}`, {
+    const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete task');
