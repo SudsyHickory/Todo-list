@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=todoDB
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+    ports:
+      - '5432:5432'
+
+  todo-app:
+    build: .
+    container_name: todo-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_started
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/todoDB
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+
+  todo-frontend:
+    build: ./dm-todo-frontend
+    container_name: todo-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - todo-app
