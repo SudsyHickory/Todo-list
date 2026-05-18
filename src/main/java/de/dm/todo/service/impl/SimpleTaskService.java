@@ -2,6 +2,7 @@ package de.dm.todo.service.impl;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,10 @@ import de.dm.todo.repository.TaskRepository;
 import de.dm.todo.service.TaskService;
 
 @Service
+@RequiredArgsConstructor
 public class SimpleTaskService implements TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
+
+    private final TaskRepository taskRepository;
 
     public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
