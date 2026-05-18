@@ -2,21 +2,21 @@ package de.dm.todo.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import de.dm.todo.dto.TaskUpdateDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import de.dm.todo.dto.TaskDto;
-import de.dm.todo.dto.TaskStatusDto;
 import de.dm.todo.exception.TaskNotFoundException;
 import de.dm.todo.model.Task;
-import de.dm.todo.model.Status;
 import de.dm.todo.repository.TaskRepository;
 import de.dm.todo.service.TaskService;
 
 @Service
+@RequiredArgsConstructor
 public class SimpleTaskService implements TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
+
+    private final TaskRepository taskRepository;
 
     public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
@@ -31,21 +31,21 @@ public class SimpleTaskService implements TaskService {
 
     public TaskDto createTask(TaskDto taskDto) {
         Task task = new Task(
-            taskDto.getTitle(),
-            taskDto.getDescription(),
-            Status.valueOf(taskDto.getStatus().name())
+            taskDto.title(),
+            taskDto.description(),
+            taskDto.status()
         );
 
         Task savedTask = taskRepository.save(task);
         return toDto(savedTask);
     }
 
-    public TaskDto updateTask(Long id, TaskDto taskDto) {
+    public TaskDto updateTask(Long id, TaskUpdateDto taskDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
-        task.setTitle(taskDto.getTitle());
-        task.setDescription(taskDto.getDescription());
-        task.setStatus(Status.valueOf(taskDto.getStatus().name()));
+        task.setTitle(taskDto.title());
+        task.setDescription(taskDto.description());
+        task.setStatus(taskDto.status());
 
         Task updatedTask = taskRepository.save(task);
         return toDto(updatedTask);
@@ -64,7 +64,7 @@ public class SimpleTaskService implements TaskService {
             task.getId(),
             task.getTitle(),
             task.getDescription(),
-            TaskStatusDto.valueOf(task.getStatus().name())
+            task.getStatus()
         );
     }
 }
