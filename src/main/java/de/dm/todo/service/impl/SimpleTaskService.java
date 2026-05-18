@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import de.dm.todo.dto.TaskDto;
-import de.dm.todo.dto.TaskStatusDto;
 import de.dm.todo.exception.TaskNotFoundException;
 import de.dm.todo.model.Task;
-import de.dm.todo.model.Status;
 import de.dm.todo.repository.TaskRepository;
 import de.dm.todo.service.TaskService;
 
@@ -35,7 +33,7 @@ public class SimpleTaskService implements TaskService {
         Task task = new Task(
             taskDto.title(),
             taskDto.description(),
-            Status.valueOf(taskDto.status().name())
+            taskDto.status()
         );
 
         Task savedTask = taskRepository.save(task);
@@ -47,7 +45,7 @@ public class SimpleTaskService implements TaskService {
 
         task.setTitle(taskDto.title());
         task.setDescription(taskDto.description());
-        task.setStatus(Status.valueOf(taskDto.status().name()));
+        task.setStatus(taskDto.status());
 
         Task updatedTask = taskRepository.save(task);
         return toDto(updatedTask);
@@ -66,7 +64,7 @@ public class SimpleTaskService implements TaskService {
             task.getId(),
             task.getTitle(),
             task.getDescription(),
-            TaskStatusDto.valueOf(task.getStatus().name())
+            task.getStatus()
         );
     }
 }
