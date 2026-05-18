@@ -2,6 +2,7 @@ package de.dm.todo.service.impl;
 
 import java.util.List;
 
+import de.dm.todo.dto.TaskUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class SimpleTaskService implements TaskService {
         return toDto(savedTask);
     }
 
-    public TaskDto updateTask(Long id, TaskDto taskDto) {
+    public TaskDto updateTask(Long id, TaskUpdateDto taskDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
         task.setTitle(taskDto.title());

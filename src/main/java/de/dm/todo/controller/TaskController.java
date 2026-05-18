@@ -1,6 +1,7 @@
 package de.dm.todo.controller;
 
 import de.dm.todo.dto.TaskDto;
+import de.dm.todo.dto.TaskUpdateDto;
 import de.dm.todo.service.TaskService;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDto taskDto) {
         return ResponseEntity.ok(taskService.updateTask(id, taskDto));
     }
 }
