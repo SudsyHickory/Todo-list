@@ -5,6 +5,7 @@ import de.dm.todo.service.TaskService;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class TaskController {
     }
 
     @PostMapping("/tasks/")
-    public ResponseEntity<TaskDto> create(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> create(@Valid @RequestBody TaskDto taskDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(taskDto));
     }
 
@@ -46,7 +47,7 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<TaskDto> update(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskDto taskDto) {
         return ResponseEntity.ok(taskService.updateTask(id, taskDto));
     }
 }

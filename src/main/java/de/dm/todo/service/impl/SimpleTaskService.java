@@ -3,7 +3,6 @@ package de.dm.todo.service.impl;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.dm.todo.dto.TaskDto;
@@ -33,9 +32,9 @@ public class SimpleTaskService implements TaskService {
 
     public TaskDto createTask(TaskDto taskDto) {
         Task task = new Task(
-            taskDto.getTitle(),
-            taskDto.getDescription(),
-            Status.valueOf(taskDto.getStatus().name())
+            taskDto.title(),
+            taskDto.description(),
+            Status.valueOf(taskDto.status().name())
         );
 
         Task savedTask = taskRepository.save(task);
@@ -45,9 +44,9 @@ public class SimpleTaskService implements TaskService {
     public TaskDto updateTask(Long id, TaskDto taskDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
-        task.setTitle(taskDto.getTitle());
-        task.setDescription(taskDto.getDescription());
-        task.setStatus(Status.valueOf(taskDto.getStatus().name()));
+        task.setTitle(taskDto.title());
+        task.setDescription(taskDto.description());
+        task.setStatus(Status.valueOf(taskDto.status().name()));
 
         Task updatedTask = taskRepository.save(task);
         return toDto(updatedTask);
