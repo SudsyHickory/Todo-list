@@ -7,5 +7,6 @@ import jakarta.validation.constraints.NotNull;
 public record TaskUpdateDto(
     @NotBlank String title,
     String description,
-    @NotNull Status status
+    @NotNull Status status,
+    Long version
 ) {}

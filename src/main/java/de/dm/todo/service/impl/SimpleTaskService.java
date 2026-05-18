@@ -11,6 +11,7 @@ import de.dm.todo.exception.TaskNotFoundException;
 import de.dm.todo.model.Task;
 import de.dm.todo.repository.TaskRepository;
 import de.dm.todo.service.TaskService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +19,20 @@ public class SimpleTaskService implements TaskService {
 
     private final TaskRepository taskRepository;
 
+    @Transactional(readOnly = true)
     public TaskDto getTaskById(Long id) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
-
-        return toDto(task);
+        return taskRepository.findById(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
+    @Transactional(readOnly = true)
     public List<TaskDto> getAllTasks() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream().map(this::toDto).toList();
     }
 
+    @Transactional
     public TaskDto createTask(TaskDto taskDto) {
         Task task = new Task(
             taskDto.title(),
@@ -40,23 +44,25 @@ public class SimpleTaskService implements TaskService {
         return toDto(savedTask);
     }
 
+    @Transactional
     public TaskDto updateTask(Long id, TaskUpdateDto taskDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
         task.setTitle(taskDto.title());
         task.setDescription(taskDto.description());
         task.setStatus(taskDto.status());
+        task.setVersion(taskDto.version());
 
-        Task updatedTask = taskRepository.save(task);
-        return toDto(updatedTask);
+        return toDto(task);
     }
 
+    @Transactional
     public void deleteTask(Long id) {
-        if (!taskRepository.existsById(id)) {
-            throw new TaskNotFoundException(id);
-        }
-
-        taskRepository.deleteById(id);
+        taskRepository.findById(id)
+            .ifPresentOrElse(
+                    taskRepository::delete,
+                    () -> { throw new TaskNotFoundException(id); }
+            );
     }
 
     private TaskDto toDto(Task task) {
@@ -64,7 +70,8 @@ public class SimpleTaskService implements TaskService {
             task.getId(),
             task.getTitle(),
             task.getDescription(),
-            task.getStatus()
+            task.getStatus(),
+            task.getVersion()
         );
     }
 }
