@@ -52,6 +52,8 @@ public class TaskService {
         task.setStatus(taskDto.status());
         task.setVersion(taskDto.version());
 
+        taskRepository.save(task);
+
         return toDto(task);
     }
 
