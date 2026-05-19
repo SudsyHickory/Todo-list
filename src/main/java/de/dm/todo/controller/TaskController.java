@@ -8,12 +8,14 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
@@ -23,6 +25,12 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskDto>> getAll() {
         return ResponseEntity.ok(taskService.getAllTasks());
+    }
+
+    @GetMapping("/pageable")
+    public ResponseEntity<Page<TaskDto>> getAllWithPageable(@PageableDefault(size = 12) Pageable pageable) {
+        Page<TaskDto> todos = taskService.getAllTasksWithPageable(pageable);
+        return ResponseEntity.ok(todos);
     }
 
     @GetMapping("{id}")

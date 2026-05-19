@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import de.dm.todo.dto.TaskCreateOrUpdateDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,12 @@ public class TaskService {
     public List<TaskDto> getAllTasks() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream().map(this::toDto).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TaskDto> getAllTasksWithPageable(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(this::toDto);
     }
 
     @Transactional
@@ -78,4 +86,6 @@ public class TaskService {
             task.getVersion()
         );
     }
+
+
 }
