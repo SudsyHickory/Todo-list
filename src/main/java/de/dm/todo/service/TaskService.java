@@ -1,9 +1,11 @@
 package de.dm.todo.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import de.dm.todo.dto.TaskCreateOrUpdateDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import de.dm.todo.dto.TaskDto;
@@ -47,12 +49,15 @@ public class TaskService {
     public TaskDto updateTask(Long id, TaskCreateOrUpdateDto taskDto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
+        if (!Objects.equals(task.getVersion(), taskDto.version())) {
+            throw new ObjectOptimisticLockingFailureException(Task.class, id);
+        }
+
         task.setTitle(taskDto.title());
         task.setDescription(taskDto.description());
         task.setStatus(taskDto.status());
-        task.setVersion(taskDto.version());
 
-        return toDto(task);
+        return toDto(taskRepository.save(task));
     }
 
     @Transactional
