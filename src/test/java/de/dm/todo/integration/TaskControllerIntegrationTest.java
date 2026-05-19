@@ -34,7 +34,8 @@ public class TaskControllerIntegrationTest {
         restClient.get().uri("/tasks")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(new ParameterizedTypeReference<List<TaskDto>>() {})
+                .expectBody(new ParameterizedTypeReference<List<TaskDto>>() {
+                })
                 .value(tasks -> {
                     assertThat(tasks).isNotNull();
                     assertThat(tasks).hasSize(3);
@@ -42,8 +43,7 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    void shouldReturnTaskById()
-    {
+    void shouldReturnTaskById() {
         TaskDto task = restClient.get().uri("/tasks/1")
                 .exchange()
                 .expectStatus().isOk()
@@ -114,4 +114,37 @@ public class TaskControllerIntegrationTest {
                 .expectStatus().isNotFound();
     }
 
+
+    @Test
+    void optimisticLockingTest() {
+        TaskDto responseA = restClient.get().uri("/tasks/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(TaskDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        TaskDto responseB = restClient.get().uri("/tasks/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(TaskDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertThat(responseA).isNotNull();
+        assertThat(responseB).isNotNull();
+
+        TaskDto responseC = new TaskDto(responseA.id(), responseA.title(), "desc", responseA.status(), responseA.version());
+        restClient.put().uri("/tasks/1")
+                .body(responseC)
+                .exchange()
+                .expectStatus().isOk();
+
+        TaskDto responseD = new TaskDto(responseA.id(), responseA.title(), "description", responseA.status(), responseA.version());
+        restClient.put().uri("/tasks/1")
+                .body(responseD)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT);
+
+    }
 }

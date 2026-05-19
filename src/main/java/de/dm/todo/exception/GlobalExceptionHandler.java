@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
-    @ExceptionHandler({ObjectOptimisticLockingFailureException.class, TransactionSystemException.class})
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ProblemDetail handleOptimisticLockingFailure()
     {
         return ProblemDetail.forStatusAndDetail(
