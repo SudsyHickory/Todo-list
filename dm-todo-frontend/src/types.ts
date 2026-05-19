@@ -8,4 +8,5 @@ export interface TaskDto {
     title: string;
     description?: string;
     status: Status;
+    version?: number
 }

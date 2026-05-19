@@ -2,6 +2,7 @@ package de.dm.todo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,5 +39,14 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty("invalid_fields", errors);
 
         return problemDetail;
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ProblemDetail handleOptimisticLockingFailure()
+    {
+        return ProblemDetail.forStatusAndDetail(
+          HttpStatus.CONFLICT,
+          "This task was modified by another user at the same time. Please refresh the data and try again."
+        );
     }
 }

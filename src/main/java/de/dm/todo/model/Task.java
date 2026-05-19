@@ -1,11 +1,6 @@
 package de.dm.todo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -23,6 +18,9 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Version
+    private Long version;
 
     public Task(String title, String description, Status status) {
         this.title = title;

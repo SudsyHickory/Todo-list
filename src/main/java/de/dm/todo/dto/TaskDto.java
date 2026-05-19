@@ -8,5 +8,6 @@ public record TaskDto (
         Long id,
         @NotBlank String title,
         String description,
-        @NotNull Status status
+        @NotNull Status status,
+        Long version
 ) {}

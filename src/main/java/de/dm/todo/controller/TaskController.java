@@ -1,7 +1,7 @@
 package de.dm.todo.controller;
 
 import de.dm.todo.dto.TaskDto;
-import de.dm.todo.dto.TaskUpdateDto;
+import de.dm.todo.dto.TaskCreateOrUpdateDto;
 import de.dm.todo.service.TaskService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskDto> create(@Valid @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> create(@Valid @RequestBody TaskCreateOrUpdateDto taskDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(taskDto));
     }
 
@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskUpdateDto taskDto) {
+    public ResponseEntity<TaskDto> update(@PathVariable Long id, @Valid @RequestBody TaskCreateOrUpdateDto taskDto) {
         return ResponseEntity.ok(taskService.updateTask(id, taskDto));
     }
 }
